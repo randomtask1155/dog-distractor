@@ -8,6 +8,7 @@ from threading import Thread, Lock
 import numpy as np
 import cv2
 import time
+import os
 
 ResNet50_model_ = ResNet50(weights='imagenet')
 
@@ -45,13 +46,15 @@ def scan_for_dog(duration=15):
         ret, frame = cap.read() ## run twice to discard the old frame
         if ret != True:
             print("faled to get image")
-        time.sleep(1)
         success = dog_detector(cv2.resize(frame, (224, 224)))
         if success:
+            os.system("play noise.wav")
             print("detected dog")
+            break
         else:
             print("not a dog")
         duration -= 1
+        time.sleep(1)
 
     cap_mutex.release()
     print("released lock")

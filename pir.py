@@ -8,7 +8,10 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(PIN,GPIO.IN)
 
 def send_post():
-    requests.post("http://192.168.86.127:8000")
+    try:
+        requests.post("http://192.168.86.127:8000")
+    except:
+        print("failed to send post request")
 
 while True:
     i=GPIO.input(PIN)
@@ -17,4 +20,5 @@ while True:
         send_post()
         time.sleep(1)
     time.sleep(0.3)
+     
 
