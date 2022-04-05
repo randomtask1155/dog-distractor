@@ -28,7 +28,7 @@ def ResNet50_predict_labels(img_path):
 
 def dog_detector(img_path):
     prediction = ResNet50_predict_labels(img_path)
-    print(prediction)
+    print(prediction, flush=True)
     return ((prediction <= 268) & (prediction >= 151))
 
 #dog_detector("./test.jpg")
@@ -45,33 +45,34 @@ def scan_for_dog(duration=15):
         ret, frame = cap.read() 
         ret, frame = cap.read() ## run twice to discard the old frame
         if ret != True:
-            print("faled to get image")
+            print("faled to get image", flush=True)
         success = dog_detector(cv2.resize(frame, (224, 224)))
         if success:
-            os.system("play noise.wav")
-            print("detected dog")
+            print("detected dog", flush=True)
+            os.system("play -q /home/pi/bin/noise.wav")
+            print("audio file completed", flush=True)
             break
         else:
-            print("not a dog")
+            print("not a dog", flush=True)
         duration -= 1
         time.sleep(1)
 
     cap_mutex.release()
-    print("released lock")
+    print("released lock", flush=True)
 
 class motionHandler(BaseHTTPRequestHandler):
     def do_POST(self):
 
         # try to grab lock without blocking and start processing
         if cap_mutex.acquire(blocking=False) and cap.isOpened():
-            print("acquired lock")
+            print("acquired lock", flush=True)
             t = Thread(target = scan_for_dog)
             t.start()
         else:
             if cap.isOpened():
-                print("did not acquire lock")
+                print("did not acquire lock", flush=True)
             else:
-                print("video capture is closed")
+                print("video capture is closed", flush=True)
             self.send_response(500)
             self.end_headers()
             return
