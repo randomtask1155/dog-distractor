@@ -1,4 +1,5 @@
 #from keras.applications.resnet50 import ResNet50
+#from keras.applications.imagenet_utils import decode_predictions
 from tensorflow.keras.applications.resnet50 import ResNet50
 from tensorflow.keras.preprocessing import image             
 from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
@@ -24,7 +25,16 @@ def paths_to_tensor(img_paths):
 
 def ResNet50_predict_labels(img_path):
     img = preprocess_input(path_to_tensor(img_path))
-    return np.argmax(ResNet50_model_.predict(img))
+ 
+    predictions = ResNet50_model_.predict(img)
+    #print(predictions, flush=True)
+    labels = decode_predictions(predictions)
+    #class_index = np.argmax(predictions)
+    print(labels, flush=True)
+    #print("prediction class: " + predictions[0][class_index], flush=True)
+    return np.argmax(predictions)
+
+    #return np.argmax(ResNet50_model_.predict(img))
 
 def dog_detector(img_path):
     prediction = ResNet50_predict_labels(img_path)
